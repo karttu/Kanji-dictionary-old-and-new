@@ -1,0 +1,4 @@
+((#F () ^) (#F. () ^) (#G () ^) (#G. () ^))
+/* All four should be read in "Dont Intern New Symbols"-mode
+    and with prefix char ^
+ */

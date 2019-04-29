@@ -1,0 +1,11 @@
+set FONT_DIR1=C:\
+set FONT_DIR2=A:\
+set DB_DIR=C:\
+set FONT16=(%FONT_DIR2%k16jis1.fnt "" 16 1 0 1 1 0)
+set FONT24=(%FONT_DIR1%jis24le1.fnt %FONT_DIR2%jis24le2.fnt 24 1 0 0 0 0)
+set DATABASE=%DB_DIR%2newest.kd
+set NEWDATABASE=%DATABASE%
+set MAXENTRIES=2470
+set MAXMEM=360000
+set OVLPATH=(C:\)
+set FILELINES_IN_VKS=120

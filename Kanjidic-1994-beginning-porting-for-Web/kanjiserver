@@ -1,0 +1,3 @@
+#!/bin/sh
+echo '(load "server.l")' | kanjid1lisp
+echo Abnormal exit from server

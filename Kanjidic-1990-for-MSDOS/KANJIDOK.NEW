@@ -1,0 +1,67 @@
+
+
+Aiheet:
+
+ Alkuj{rjestelyt, env.vars, ramdisk, SIMCGA, font files, etc.
+
+ Database structure
+
+ Prefixes
+
+ Fields & their meanings
+
+ indexing modes
+
+ read-system, wildcard-expansion, etc.
+
+ raw mode & screen mode, moving in screen mode, view
+
+ f - komento, , ja ne komennot ym.
+
+ ikkunat
+
+  Ohjelman n{ytt| on jaettu kahteen ikkunaan. Ruudun alalaidassa on
+kolmen rivin kokoinen ns. "notice-window", johon tulevat erilaiset
+info- ja virheilmoitukset. Sen yl{puolella on komentorivi, miss{
+on kehoite (prompt) (joka ei useinkaan ole mitenk{{n j{rkev{), ja
+siihen sy|tet{{n komennot.
+  Sen yl{puolella, n{yt|n yl{reunaan saakka, on 21:n rivin kokoinen
+kanji-ikkuna, jossa n{ytet{{n kanjit ja niihin liittyv{t tekstit,
+sek{ kaikki muut ilmoitukset, jotka eiv{t mahdu alaikkunaan.
+
+ groups
+
+  Dollarilla ($) alkavat symbolit ovat ryhmien (groups) nimi{. Yhdell{
+dollarilla alkavat ovat tavallisia, yksinkertaisia ryhmi{, miss{
+jokainen elementti on vain yksi kanji. Kahdella dollarilla alkavat
+ryhm{t ovat ns. yhdistelm{ryhmi{ (compound groups), joissa jokainen
+elementti on useammasta kanjista koostunut, joten jokainen elementti
+n{ytet{{n omalla rivill{{n.
+  Olen koonnut ryhmi{ sekalaisista aiheista mit{ mieleeni on tullut,
+esimerkiksi numerot, v{rit, ilmansuunnat, metallit, shogi-nappulat,
+planeetat, etc.
+  $ komennolla voi katsella ryhm{n/ryhmien sis{ll|n screen-modessa,
+esimerkiksi $ $COLOURS n{ytt{{ kanjit jotka tarkoittavat jotain
+v{ri{.
+
+
+ kana-tables
+
+  Ryhm{t $KATAKANA ja $HIRAGANA ovat erikoisryhmi{, jotka sis{lt{v{t
+traditionaalisen GOJUUON taulukon (tosin olen joutunut N:n laittamaan
+hieman omituiseen paikkaan tilanpuutteen vuoksi). Koska 24x24 fontilla
+taulukko ei mahtuisi pelkk{{n kanji-ikkunaan, sit{ v{liaikaisesti
+suurennetaan niin ett{ se nielaisee sis{{ns{ my|s ilmoitusikkunan.
+
+ bugs
+
+  Numerous.
+
+ history
+
+ future suggestions
+
+ inner structure
+
+ pedagogisia huomiota, hypertekstil{ssytyst{.
+

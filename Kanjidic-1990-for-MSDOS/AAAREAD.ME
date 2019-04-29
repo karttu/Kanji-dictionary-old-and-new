@@ -1,0 +1,95 @@
+ 
+
+    KANJIDIC - Electronic Kanjidictionary for the IBM-PC clones
+    with CGA-screen or compatible.
+    Copyright (C) 1991  Antti J. Karttunen
+
+    This is the PRERELEASE VERSION. Everything is still quite buggy
+    and ugly, but program still does work.
+    Here are some of the sources included, but NOT all.
+    This package contains also some "h|h{"-files which have
+    nothing to do with the kanjidic.
+    Kanjidic uses the same list subsystem as St. Vitus' Lisp,
+    lisp interpreter (modules lists1.c, lists2.c, fundamen.asm etc.),
+    but this software requires lots of editing so that it could
+    be compiled with new versions of those modules.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 1, or (at your option)
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License (in file GPL.TXT) for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+ 
+ 
+Hardware requirements:
+Some kind of PC or clone. (The faster the better).
+CGA or compatible (still uses CGA graphics, barf!)
+(use software like SIMCGA with Hercules).
+Lots of RAM. At least 512K I think. Environment variable MAXMEM in SETK.BAT
+defines how much program tries to allocate RAM in bytes.
+Hard disk is also handy invention, although I have run (and coded!) this
+software with only two 360K floppy drives and 512K ramdisk.
+ 
+ 
+First run SETK.BAT to set some environment variables
+(SHELL=C:\COMMAND.COM /E:4096 /P might help in your CONFIG.SYS if environment
+space is spaced out).
+Edit drives and directorys mentioned in SETK.BAT to be appropriate in your
+machine. Then start KANJIDIC.EXE with KD.BAT
+When program has loaded all the stuff in, and preprocessed it (Passes 1-3)
+(it can take some time, so be patient!), then the kanji for Sun
+should appear, with its explanation.
+First thing you shold do is change program to more sophisticated
+"screen mode", from default "raw mode", with command @3
+Then you can just move with cursor keys, and when you press INS you go to
+corresponding kanji-entry, and so on, and with DEL-key you can come back,
+as long there is entries in the return stack.
+With ? you should get some help.
+ 
+Some important files:
+ 
+2NEWEST.KD     Database containing kanjientries in the list format.
+               This is read in when program is started, and then nothing
+               is done with it.
+               First number in the lists is index to fontfiles, and
+               it can be converted to Shift-JIS with function index_to_sj
+               and to JIS with function index_to_jis. Both functions are
+               in the module JISFUN.C
+
+NEWEST.KD      If you use W command (write) then new database is written
+               with this name. Shouldn't be used if you haven't edited
+               the database with edit commands. If you want disable
+               W command, you can define NEWDATABASE to be NUL: in SETK.BAT
+               (Edit then also SHIFTFIL.BAT or something...)
+ 
+JIS16LE1.FNT   These are 16x16 pixel font files, JIS levels 1 & 2.
+JIS16LE2.FNT
+
+JIS24LE1.FNT   These are 24x24 pixel font files, JIS levels 1 & 2.
+JIS24LE2.FNT
+ 
+If you put fontfiles to ramdisk then kanjis are shown much faster.
+Only few kanjis in this database reside in JIS level 2, and
+most are in level 1, so it suffices to put only level 1 font files
+to ramdisk (or one of them, one you use), if space is lacking.
+Edit file SETK.BAT accordingly.
+ 
+*.OVR          These are overlay files for the commands. OVLPATH variable
+               in SETK.BAT defines where these are loaded from.
+               Of course these could also be in ramdisk.
+*.KDX          These are command definition files related to overlay
+               files and should be in the same directory as those.
+ 
+KANJIDIC.EXE   This executable code itself, or actually just root of it,
+               rest are in those overlay files.
+ 
+

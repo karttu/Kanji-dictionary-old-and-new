@@ -1,0 +1,10 @@
+set FONT_DIR=C:\KANJIDIC\
+set DB_DIR=C:\KANJIDIC\
+set FONT16=(%FONT_DIR%k16jis1.fnt %FONT_DIR%k16jis2.fnt 16 1 0 1 1 0)
+set FONT24=(%FONT_DIR%jis24le1.fnt %FONT_DIR%jis24le2.fnt 24 1 0 0 0 0)
+set DATABASE=%DB_DIR%2newest.kd
+set NEWDATABASE=%DB_DIR%newest.kd
+set MAXENTRIES=2470
+set MAXMEM=360000
+set OVLPATH=(C:\)
+set FILELINES_IN_VKS=60

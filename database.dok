@@ -1,0 +1,303 @@
+Newsgroups: sci.lang.japan
+Path: mits!karttu
+From: karttu@mits.mdata.fi (Antti Karttunen)
+Subject: KANJI DATABASE (was Re: Request: Online index to Nelson or O'Neill)
+Message-ID: <1992Mar22.172639.22022@mits.mdata.fi>
+Organization: MITS, Helsinki, Finland
+References: <HALLDORS.92Mar19111056@garlic.cs.titech.ac.jp>
+Distribution: sci
+Date: Sun, 22 Mar 1992 17:26:39 GMT
+Lines: 216
+
+In article <HALLDORS.92Mar19111056@garlic.cs.titech.ac.jp> halldors@garlic.cs.titech.ac.jp (Magnus M. Halldorsson) writes:
+>Does anybody have an online index from/to JIS code to/from one of the
+>following kanji dictionaries/books:
+>  A. Nelson: Japanese-English Character Dictionary
+>  P.G. O'Neill: Essential Kanji
+>  Heisig: Remembering the Kanji
+>
+>
+>The reason for my request is that I want to construct an
+>index/crossreference from the New Japanese-English Character
+>Dictionary (Halpern), to the Heisig book. It would also be usable
+>online for, say, a query program. I intend to make this publicly
+>available when ready, if anyone is interested.
+>
+>Thanks in advance,
+>
+>Magnus
+
+    Okay, here I publish the database I have constructed from a year
+    1988 (?) onward. It's unfinished in many respects, contains
+    probably some errors, and uses the complex crossreferencing
+    system, but I hope you have some use for it. I also grant the
+    permission for everybody to scavenge data from this database
+    to their own applications. (Although I'm not sure who should
+    have the copyright? Anyway, you can't create a new dictionary
+    without looking help from the old ones... ;-)
+
+    This database is used by KANJIDIC, an electronic kanji dictionary
+    I have coded for IBM-PC compatibles. The reason I don't publish
+    software itself (at least not yet) is that it's written in
+    not-so-compatible C & Assembly-code, and the state of the sources
+    is somewhat dubious, and program is a little bit buggy too.
+
+    If you want to get just the jis-indexes and Heisig keywords
+    I recommend that you use C or some other language to get them
+    from the beginning of each line and ignore the rest.
+    If you want more data out I recommend that you read the
+    stuff in with some Lisp which can handle the large amounts
+    of data, and then do the appropriate conversions.
+
+    I hope that you can make some sense out of the following document.
+    If something is unclear then please feel free to ask from me.
+    (Maybe I will publish this later in more sensible format
+    if I have time to code the conversion software).
+
+    Database follows this article, divided to three articles, which
+    should together make 2465 lines (some of them are over 80 chars
+    long), 150699 bytes (in Unix, without CR's).
+
+    FORMAT OF THE DATABASE.
+
+    Database consists of Lisp-like free-formatted lists.
+    I.e, they begin with left parentheses ( and end with
+    corresponding matching right parentheses ). Lists can
+    contain symbols, numbers, strings and sublists.
+    Dotted pair notation of the Lisp is also used in some
+    occassions.
+    Each list is one entry, corresponding to one kanji.
+    There is also special entries which begin with asterisk (*),
+    which are just comments or contain other information.
+    Normal kanji-entries are composed of the several fields.
+    Six of the fields are mandatory, being the first six
+    elements of the list. (So they can be accessed just by
+    indexing because we know that they are always there.)
+
+      First of them is JIS-index, i.e. index to font file which
+    can be easily converted to JIS, Shift-JIS or EUC.
+    (Algorithms for doing this are given in the end of this
+     document.)
+
+      Second and third of them are index and keyword to
+    "Remembering the Kanji I" by James W. Heisig, published by
+    Japan Publications Trading Company, ISBN 0-87040-739-2.
+
+      Fourth and fifth field are the index and meanings given in
+    "A New Dictionary of Kanji Usage", published by Gakken,
+    ISBN 4-05-051805-8. (First published 1982, Tenth impression 1988).
+    When there is only one meaning given in Gakken, then the fourth
+    field is just a single symbol, but if there's more meanings
+    then it is a list, of course. That list can be further divided
+    to sublists, according to how meanings given in Gakken are
+    related to each other, but most often it's not.
+
+      Sixth field contains the radicals and other kanji(s) needed
+    to compose this kanji. Note that these elements are not always
+    radicals themselves, but kanjis composed of other elements.
+    In my software I recursively expand the element lists until
+    they contain only basic level radicals. (Hmm, the same technique
+    could be used to calculate the stroke counts from the elements,
+    if somebody wanted to add them to database.)
+
+      If any of these mandatory fields are missing, then there is
+    a () in place of it. This means empty list, i.e. NIL in Lisp.
+      After the mandatory six fields come the optional fields, which
+    can be in any order. Each optional field has the key (symbol whose
+    first character is colon :) and after the key the contents
+    of that field. There can be also flags (symbols whose first
+    character is exclamation point !) which don't have any contents,
+    but just tell something to software.
+
+      Field :P lists the "primitive names" given in the Heisig book,
+    which are used for that kanji when it is the part of another kanji.
+    They correspond to the traditional radicals, except that they often
+    have somewhat more humorous names. (Which makes Heisig book so
+    fun to read!) They all begin with caret (^).
+
+      Field :S lists some similar looking kanji(s), if there's any.
+    Note that database contains :S (and :SEE) references only to one
+    direction. To the other direction they are created when database
+    is loaded to software. For example, the entry 3 (age year) contains
+    the :S reference to the entry 98 (noon), although the latter
+    doesn't contain the reference to the entry 3.
+
+      Field :R gives some readings for that kanji. Kun readings are
+    in lowercase and on readings in uppercase. They all begin with
+    a percent sign (%). Equal sign (=) in readings denote small tsu,
+    i.e. that the following consonant should be doubled.
+    This field is just in couple of entries, because I have been too
+    lazy to enter them all. Note that all romanizations in database
+    are in Hepburn-system.
+
+      Fields :E and :EXE contain some alternative element lists, if
+    there's some irregularities in mandatory elements field.
+
+      Field :COMPOUNDS contains some words composed of this and some
+    other kanji(s). Again, this is only in few entries.
+
+      Field :COMMENT contains some english comment given in string.
+
+      Field :G contains the group name(s) where this kanji belongs.
+    All group names begin with a dollar ($). Groups whose elements
+    are single kanjis begin with one dollar, and those whose
+    elements are kanji-compounds have two dollars in the beginning of
+    their name (e.g. $$WEEKDAYS).
+
+      Fields :HIRAGANA and :KATAKANA contains the romanization of
+    corresponding kana, katakana in uppercase, hiragana in
+    lowercase. All of them begin with a tilde (~).
+
+      Field :OTHER contains meanings given in some other dictionaries
+    than Gakken or Heisig.
+
+    Many of the fields contain references to other kanjis/entries
+    in the database. The referencing system is somewhat complicated.
+      If reference is just (positive) number, then it refers to
+    corresponding Gakken-entry, i.e. the "n:th" entry in this
+    sorting order. This method is used mainly with :S fields.
+      If reference is negative number (beginning with - sign), then
+    it refers to kanji with that JIS-index (of course number is
+    changed positive first). This is only used with couple of kanas.
+      If reference is symbol which doesn't begin with any special
+    character, then the entry with that word given as Heisig
+    keyword (the third field) is used. This can be guaranteed
+    to produce unambiguous references because in Heisig book
+    every keyword is used only once. (Same is not true with Gakken).
+    If there's no that kind of Heisig keyword, then the first
+    Gakken keyword encountered in database is used. (I hope
+    I remember this correctly!) This referencing method is
+    used at least in element fields (sixth field).
+      If reference is symbol beginning with a caret (^), i.e.
+    primitive-name, then the entry which contains that symbol in its
+    :P field list is used. (This is also used in elements field).
+      If reference is symbol beginning with a tilde (~) then the
+    corresponding kana is used.
+      Reference can be also of the form: (word . reference) where
+    car part of the dotted pair is used instead of the default
+    word (Heisig keyword) when software prints out the kanji and
+    text. Cdr part can be one of those references listed above.
+
+
+    Here is the C code for converting JIS index given in the first
+    field to JIS or Shift-JIS. High byte should be printed first,
+    and then the low byte. With JIS they should be surrounded by
+    the appropriate ESC-sequences. Note that code is not the best
+    possible.
+
+/* Index to JIS code: */
+UINT index_to_jis(index)
+UINT index;
+{
+        register UINT hi,lo;
+
+        if(index > 8835) /*   94 * 94 = 8836   */
+         {
+           jis_errcnt++;
+           index = _invalid_kanji;
+         }
+
+        hi  = (index / 94) + 0x21; /* 0x21 is '!' in ascii. */
+        lo  = (index % 94) + 0x21;
+        return((hi << 8) + lo);
+}
+
+
+/* Index to Shift-JIS: */
+UINT index_to_sj(index)
+UINT index;
+{
+        register UINT hi,lo;
+
+        hi = (index / 188) + 0x81;
+        lo = (index % 188) + 0x40; /* 0x40 is '@' in ascii. */
+
+        if(lo > 0x7E) { lo++; } /* Skip DEL */
+
+        if(((hi < 0x81) || (hi > 0xFC)) ||
+            ((lo < 0x40) || (lo > 0xFC) /* || (lo == 0x7F) */))
+          /* If invalid Shift-JIS code was made, then return 0x8188
+         { return(0x8188); } /* Shift-JIS code of 71 (three dots) */
+
+        return((hi << 8) + lo);
+}
+
+
+Here is some more information about the sixth field:
+
+Yes, the sixth field is the elements field, which I have taken
+in most cases from that book of Heisig which I mentioned in that
+introduction. In some cases I have deducted the elements by myself.
+That field contains two or more words. If word doesn't begin with
+caret (^) then that element is kanji itself and is that kanji which
+has that word in third field (= Heisig keyword). If word begins
+with ^ then that word is so called primitive defined in Heisig book.
+In some (most ?) cases it is actually some kanji, but that primitive
+name is used instead of kanji name when it is used as an element of
+another kanji. So it is that kanji which lists that primitive name
+(beginning with ^) in its :P-field. In other cases that primitive
+is only used as part of other kanjis, but never as whole kanji by itself.
+Those primitives are listed near the end of database, and they have also
+the :PG field which tells in which page of Heisig book they are defined.
+Some of them have the JIS-index, but not all, because probably they
+are not even listed in JIS standard. (Although some more could be found
+by carefully searching the JIS-2 level kanjis.)
+
+For example:
+This is a primitive name ^taskmaster listed at page 128 of the Heisig book
+and it is also defined in JIS:
+(5387 () () () () () :P ^taskmaster :PG 128)
+
+This is called ^arrow, and it's defined in page 134 of the Heisig book,
+but I haven't found any JIS code for it from fontfiles. (Although there
+_might_ be one.):
+(() () () () () () :P ^arrow :PG 134)
+
+
+Here is the example:
+
+We have kanji for the number "hundred million" which is composed
+of two other kanjis, person & idea:
+(1612 983 hundred_million 389 hundred_million (person idea) :R %OKU)
+
+"Person" (i.e. man, human) is itself "basic" kanji, not composed of other ones:
+(2864 951 person 9 ((man person) human (another_man others) @Cs_men
+ (@Suf_race @Suf_nationality)) () :S (74 41))
+
+"Idea" is composed of sound & heart:
+(1462 608 idea 118 (intention meaning) (sound heart))
+
+"Heart" is again "basic" kanji, so its element field is ():
+(2839 595 heart 139 heart () :S 292)
+
+"Sound" is composed of kanjis "stand up" and "^tongue wagging in the mouth":
+(1624 479 sound 402 sound (stand_up ^tongue_wagging_in_the_mouth) :S 967)
+
+Both are "basic" kanjis themselves, not composed of others:
+(4238 431 stand_up 61 ((stand erect rise) (set_up raise establish) cubic) ()
+ :P ^vase :S 136)
+
+We see that "^tongue wagging in the mouth" is just the same kanji as "sun",
+"day" (first one in database), but with that kind of funny primitive
+name defined in Heisig book, and used in this occassion:
+(3569 12 day 1 (sun (day daytime) @Cs_days Japan) ()
+ :P (^sun ^tongue_wagging_in_the_mouth) :S (65 mouth sayeth)
+ :COMPOUNDS (((sun (origin . 15)) Japan (%NIPPON %NIHON))))
+
+So "hundred million" is composed from "person", "stand up", "sun" and "heart".
+In my program I keep this original elements field intact, and then build
+the new, temporary field, to which I collect all these basic level
+kanjis/primitives.
+
+In some cases it might be so that there is no entry in database with
+that word in its Heisig-keyword field, which was listed in the elements
+field of this kanji. (I rewrite and rewrite the previous sentence, but
+I don't get any sense to it. I Hope that _you_ get some sense of it. ;-)
+In that case you must use the _first_ entry in database which has that
+word in its Gakken-keyword field (fifth field). (Or maybe even :OTHER
+field in some cases?) I don't remember exactly, as it has been some years
+when I created this database.
+
+
+Antti Karttunen     --     karttu@mits.mdata.fi     --              !?
+
